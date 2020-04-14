@@ -16,7 +16,7 @@ It adds some convenient methods to HttpExchange class for easier manipulation of
 Just download [ServiceScript.groovy](./ServiceScript.groovy) file to you local machine.
 You can now import that file to any other Groovy script you want using classic `import` statement.
 
-#### One liner example
+#### One-liner example
 ```groovy
 import com.sun.net.httpserver.Filter
 import com.sun.net.httpserver.HttpExchange
@@ -54,7 +54,20 @@ import static ServiceScript.*
 
 int callCounter = 0;
 
-// BasicAuth. You can add a custom one by implementing com.sun.net.httpserver.Authenticator.
+// BasicAuth. You can add a custom one by using ServiceScript's Auth or by implementing com.sun.net.httpserver.Authenticator.
+// Auth example:
+/*Auth customAuth = [
+    authenticate: { HttpExchange exchange ->
+      new Authenticator.Success(new HttpPrincipal("lena", "basic"))
+    }
+]*/
+// Authenticator example:
+/*Authenticator authenticator = new Authenticator() {
+  @Override
+  Authenticator.Result authenticate(HttpExchange exch) {
+    new Authenticator.Failure(401)
+  }
+}*/
 BasicAuth basicAuth = { String username, String password -> username == "lena" && password == "123" }
 
 Middleware requestCounter = [
