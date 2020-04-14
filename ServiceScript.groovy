@@ -59,7 +59,7 @@ class ServiceScript {
 
         if (!HTTP_SERVER) {
             HTTP_SERVER = HttpServer.create new InetSocketAddress(port), 10
-            HTTP_SERVER.executor Executors.newFixedThreadPool(25)
+            HTTP_SERVER.setExecutor Executors.newFixedThreadPool(25)
         }
 
         methods.each {
