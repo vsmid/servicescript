@@ -1,6 +1,7 @@
 import com.sun.net.httpserver.*
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import groovy.transform.TupleConstructor
 
 class ServiceScript {
 
@@ -19,6 +20,21 @@ class ServiceScript {
         Closure exchange
         List<Middleware> middleware
         Authenticator authenticator
+    }
+
+    @TupleConstructor
+    static class ExchangeHandler implements HttpHandler {
+        Closure handler
+
+        @Override
+        void handle(HttpExchange exchange) throws IOException {
+            try {
+                this.handler.call exchange
+            } catch (e) {
+                println "[error] ${e.message}"
+                exchange.json 500, [error: e.message]
+            }
+        }
     }
 
     static class Middleware extends Filter {
@@ -42,7 +58,7 @@ class ServiceScript {
         server = HttpServer.create new InetSocketAddress(port), 0
 
         methods.each {
-            HttpContext context = server.createContext "/" + it.name, it.exchange as HttpHandler
+            HttpContext context = server.createContext "/" + it.name, new ExchangeHandler(it.exchange)
             if (it?.authenticator) context.setAuthenticator it.authenticator
             if (it?.middleware) context.filters.addAll it.middleware
         }
