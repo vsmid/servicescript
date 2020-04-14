@@ -54,13 +54,16 @@ import static ServiceScript.*
 
 int callCounter = 0;
 
-// BasicAuth. You can add a custom one by using ServiceScript's Auth or by implementing com.sun.net.httpserver.Authenticator.
+// BasicAuth. 
+// You can add a custom one by using ServiceScript's Auth or by implementing com.sun.net.httpserver.Authenticator.
+
 // Auth example:
 /*Auth customAuth = [
     authenticate: { HttpExchange exchange ->
       new Authenticator.Success(new HttpPrincipal("lena", "basic"))
     }
 ]*/
+
 // Authenticator example:
 /*Authenticator authenticator = new Authenticator() {
   @Override
@@ -68,6 +71,7 @@ int callCounter = 0;
     new Authenticator.Failure(401)
   }
 }*/
+
 BasicAuth basicAuth = { String username, String password -> username == "lena" && password == "123" }
 
 Middleware requestCounter = [
@@ -109,6 +113,10 @@ Method someMethod = [
         } 
 ]
 ```
+
+## Exception handling during exchange
+You can use classic try/catch to add customized exception handling.
+If you do not provide any ServiceScript will report all unhandled exceptions by responding with `http status 500` and by setting `Reason` http header with exception message. 
 
 ## Providing custom HttpServer
 In case you are not satisfied with default http server or you would like to create https server you can provide your own on the fly.
