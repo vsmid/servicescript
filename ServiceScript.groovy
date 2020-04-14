@@ -68,7 +68,8 @@ class ServiceScript {
                 this.handler.call exchange
             } catch (e) {
                 println "[error] ${e.message}"
-                exchange.json 500, [error: e.message]
+                exchange.responseHeaders.add "Reason", e.message
+                exchange.out 500, "*/*", "".bytes
             }
         }
     }
