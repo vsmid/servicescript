@@ -3,11 +3,14 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.TupleConstructor
 
+import java.util.concurrent.Executors
+
 class ServiceScript {
 
-    private ServiceScript() {}
-
     static JsonSlurper JSON = new JsonSlurper()
+    static HttpServer HTTP_SERVER
+
+    private ServiceScript() {}
 
     static abstract class BasicAuth extends BasicAuthenticator {
         BasicAuth() {
@@ -54,25 +57,23 @@ class ServiceScript {
     static void expose(int port = new Random().nextInt(9000 - 5000 + 1) + 5000, Method... methods) {
         extend()
 
-        HttpServer server
-        server = HttpServer.create new InetSocketAddress(port), 0
+        if (!HTTP_SERVER) {
+            HTTP_SERVER = HttpServer.create new InetSocketAddress(port), 10
+            HTTP_SERVER.executor Executors.newFixedThreadPool(25)
+        }
 
         methods.each {
-            HttpContext context = server.createContext "/" + it.name, new ExchangeHandler(it.exchange)
+            HttpContext context = HTTP_SERVER.createContext "/" + it.name, new ExchangeHandler(it.exchange)
             if (it?.authenticator) context.setAuthenticator it.authenticator
             if (it?.middleware) context.filters.addAll it.middleware
         }
 
-        server.setExecutor(null)
-
         println "[info] Available service methods:"
         println methods.collect { "/" + it.name }.join(System.lineSeparator())
 
-        server.start()
+        HTTP_SERVER.start()
 
-        println "[info] Service opened on port ${port}"
-
-        server
+        println "[info] Service opened on port ${HTTP_SERVER.address.port}"
     }
 
     static void extend() {
