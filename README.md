@@ -16,8 +16,18 @@ It adds some convenient methods to HttpExchange class for easier manipulation of
 Just download [ServiceScript.groovy](./ServiceScript.groovy) file to you local machine.
 You can now import that file to any other Groovy script you want using classic `import` statement.
 
+#### One liner example
 ```groovy
-// Basic example
+import com.sun.net.httpserver.Filter
+import com.sun.net.httpserver.HttpExchange
+import static ServiceScript.*
+
+// curl localhost:6666/greet
+expose 6666, [name: "greet", exchange: { HttpExchange exchange -> exchange.out 200, "text/plain", "Hi".bytes }] as Method
+```
+
+#### Basic example
+```groovy
 import com.sun.net.httpserver.Filter
 import com.sun.net.httpserver.HttpExchange
 import static ServiceScript.*
@@ -35,5 +45,38 @@ Method findAll = [
 // curl localhost:6666/findAll
 expose 6666, findAll
 ```
-## Example
+
+####  Middleware and authentication example
+```groovy
+import com.sun.net.httpserver.Filter
+import com.sun.net.httpserver.HttpExchange
+import static ServiceScript.*
+
+int callCounter = 0;
+
+// BasicAuth. You can add a cusotm one by implementing com.sun.net.httpserver.Authenticator.
+BasicAuth basicAuth = { String username, String password -> username == "lena" && password == "123" }
+
+Middleware requestCounter = [
+        doFilter: { HttpExchange exchange, Filter.Chain chain ->
+            println "${exchange.requestURI} called ${++callCounter} time(s)"
+            chain.doFilter exchange
+        }
+]
+        
+Method secured = [
+        name         : "secured",
+        exchange     : { HttpExchange exchange ->
+            println "Authenticated user: ${exchange.principal}"
+            exchange.json 200, [success: true"]
+        },
+        middleware   : [requestCounter], // Add as many filters as you like. Executed in order.
+        authenticator: basicAuth 
+]
+
+// curl -u "lena:123" localhost:6666/secured
+expose 6666, secured
+```
+
+## Full example
 See [CarsService.groovy](./CarsService.groovy).
