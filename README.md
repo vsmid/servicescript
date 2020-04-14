@@ -78,5 +78,34 @@ Method secured = [
 expose 6666, secured
 ```
 
+## Request/Response handling
+Everything revolves around HttpExchange object during exchange phase.
+Here is a list of added helper methods you can use:
+
+* `HttpExchange#out(int status, String contentType, byte[] content)` - call to write and commit response
+* `HttpExchange#json(int status, Object content)` - wrapper around out method for fast json response
+* `HttpExchange#textdata` - call to get request body as text
+* `HttpExchange#jsondata` - call to get request body as json
+
+```groovy
+Method someMethod = [
+        name         : "secured",
+        exchange     : { HttpExchange exchange ->
+            String data = exchange.textdata() // or exchange.jsondata() to get data as json
+            exchange.json 200, [success: true] // or exchange.out 200, "application/json", Jsonoutput.toJson([success:true]).bytes
+        } 
+]
+```
+
+## Providing custom HttpServer
+In case you are not satisfied with default http server or you would like to create https server you can provide your own on the fly.
+```groovy
+import com.sun.net.httpserver.HttpServer
+import static ServiceScript.*
+
+HTTP_SERVER = HttpServer.create new InetSocketAddress(8888), 15
+...
+```
+
 ## Full example
 See [CarsService.groovy](./CarsService.groovy).
