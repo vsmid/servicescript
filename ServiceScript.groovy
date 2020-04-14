@@ -87,7 +87,7 @@ class ServiceScript {
         }
     }
 
-    static abstract class Auth extends Authenticator {
+    static class Auth extends Authenticator {
         Function<HttpExchange, Result> authenticate
 
         @Override
