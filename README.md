@@ -1,7 +1,8 @@
 # ServiceScript
 
 ## Why?
-Zero dependency Groovy script powered fast http service prototyping without creating a project.
+Highly opinionated, zero dependency Groovy script powered fast http service prototyping without creating a project.
+This is not designed with REST in mind.
 
 ## Prerequisites
 * Java
