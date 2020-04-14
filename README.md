@@ -54,7 +54,7 @@ import static ServiceScript.*
 
 int callCounter = 0;
 
-// BasicAuth. You can add a cusotm one by implementing com.sun.net.httpserver.Authenticator.
+// BasicAuth. You can add a custom one by implementing com.sun.net.httpserver.Authenticator.
 BasicAuth basicAuth = { String username, String password -> username == "lena" && password == "123" }
 
 Middleware requestCounter = [
