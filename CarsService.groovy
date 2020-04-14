@@ -28,7 +28,7 @@ Method findAll = [
 Method findOne = [
         name         : "findOne",
         exchange     : { HttpExchange exchange ->
-            println "Authenticatd user: ${exchange.principal}"
+            println "Authenticatedd user: ${exchange.principal}"
             exchange.json 200, cars[exchange.jsondata()?.type] ?: []
         },
         middleware   : [requestCounter],
