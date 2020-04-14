@@ -4,6 +4,7 @@ import groovy.json.JsonSlurper
 import groovy.transform.TupleConstructor
 
 import java.util.concurrent.Executors
+import java.util.function.Function
 
 class ServiceScript {
 
@@ -50,12 +51,6 @@ class ServiceScript {
         }
     }
 
-    static abstract class BasicAuth extends BasicAuthenticator {
-        BasicAuth() {
-            super("basic")
-        }
-    }
-
     static class Method {
         String name
         Closure exchange
@@ -89,6 +84,21 @@ class ServiceScript {
         @Override
         String description() {
             ""
+        }
+    }
+
+    static abstract class Auth extends Authenticator {
+        Function<HttpExchange, Result> authenticate
+
+        @Override
+        Result authenticate(HttpExchange exchange) {
+           authenticate.apply exchange
+        }
+    }
+
+    static abstract class BasicAuth extends BasicAuthenticator {
+        BasicAuth() {
+            super("basic")
         }
     }
 }
