@@ -2,7 +2,6 @@
 
 ## Why?
 Zero dependency Groovy script powered fast http service prototyping without creating a project.
-This one relies only on JDK.
 
 ## Prerequisites
 * Java
