@@ -35,9 +35,15 @@ Method findOne = [
         authenticator: basicAuth
 ]
 
+Method licencePlate = [
+        name      : "licencePlate",
+        exchange  : { HttpExchange exchange -> exchange.out 200, "text/plain", "KR-4456-ZG".bytes },
+        middleware: [requestCounter]
+]
+
 Method metrics = [
         name    : "metrics",
         exchange: { HttpExchange exchange -> exchange.json 200, ["metrics": ["calls": callCounter]] }
 ]
 
-expose 1111, findAll, findOne, metrics
+expose 1111, findAll, findOne, licencePlate, metrics
