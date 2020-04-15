@@ -39,13 +39,21 @@ class ServiceScript {
 
     static void extend() {
         HttpExchange.metaClass {
-            out { status = 200, contentType = "*/*", content = "".bytes ->
+            out { status = 200, contentType = "*/*", content ->
                 delegate.responseHeaders.add "Content-type", contentType
-                delegate.sendResponseHeaders status, content.length
-                delegate.responseBody.write content
+                delegate.sendResponseHeaders status, content?.length ?: -1
+                if (content) delegate.responseBody.write content
                 delegate.close()
             }
             json { status = 200, content -> delegate.out status, "application/json", JsonOutput.toJson(content).bytes }
+            streamout { status = 200, contentType = "application/octet-stream", is ->
+                delegate.responseHeaders.add "Content-type", contentType
+                delegate.sendResponseHeaders status, 0
+                delegate.responseBody.withStream {
+                    out -> is.withStream { it.eachByte { out.write(it) } }
+                }
+                delegate.close()
+            }
             jsondata { JSON.parse delegate.requestBody }
             textdata { new String(delegate.requestBody.readAllBytes()) }
         }
@@ -93,7 +101,7 @@ class ServiceScript {
 
         @Override
         Result authenticate(HttpExchange exchange) {
-           authenticate.apply exchange
+            authenticate.apply exchange
         }
     }
 

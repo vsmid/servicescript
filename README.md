@@ -118,6 +118,7 @@ Here is a list of added helper methods you can use:
 
 * `HttpExchange#out(int status, String contentType, byte[] content)` - call to write and commit response
 * `HttpExchange#json(int status, Object content)` - wrapper around out method for fast json response
+* `HttpExchange#streamout(int status, String contentType, InputStream content)` - write response as a stream. e.g. download documents etc.
 * `HttpExchange#textdata` - call to get request body as text
 * `HttpExchange#jsondata` - call to get request body as json
 
