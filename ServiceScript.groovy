@@ -24,7 +24,7 @@ class ServiceScript {
     private ServiceScript() {}
 
     static System.Logger logger(String name) {
-        System.getLogger
+        System.getLogger name
     }
 
     static void expose(int port = new Random().nextInt(9000 - 5000 + 1) + 5000, Method... methods) {
