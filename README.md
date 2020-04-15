@@ -16,7 +16,7 @@ It adds some convenient methods to `com.sun.net.httpserver.HttpExchange` class f
 Just download [ServiceScript.groovy](./ServiceScript.groovy) file to you local machine.
 You can now import that file to any other Groovy script you want using classic `import` statement.
 
-## Method, Middleware, Auth classes
+## Method, Middleware and Auth classes
 **Method**
 
 Describe and implement operation per single request. Following properties can be set:
