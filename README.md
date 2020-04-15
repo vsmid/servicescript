@@ -151,8 +151,8 @@ HTTP_SERVER = HttpServer.create new InetSocketAddress(8888), 15
 ```
 
 ## Logging
-Java's `System.Logger` is used for logging inside ServiceSrcipt.
-`ServiceScript#logger(String name)` method which returns `System.Logger` is provided and you can use it in your scripts for logging.
+Java's `java.util.logging.Logger` is used for logging inside ServiceSrcipt.
+`ServiceScript#logger(String name)` method which returns `java.util.logging.Logger` is provided and you can use it in your scripts for logging.
 
 ## Full example
 See [CarsService.groovy](./CarsService.groovy).

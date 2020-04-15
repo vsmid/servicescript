@@ -2,7 +2,7 @@ import com.sun.net.httpserver.Filter
 import com.sun.net.httpserver.HttpExchange
 
 import static ServiceScript.*
-import static java.lang.System.Logger.Level.INFO
+import static java.util.logging.Level.INFO
 
 def applog = logger "CarsService"
 

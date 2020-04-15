@@ -5,13 +5,14 @@ import groovy.transform.TupleConstructor
 
 import java.util.concurrent.Executors
 import java.util.function.Function
+import java.util.logging.Logger
 
-import static java.lang.System.Logger.Level.ERROR
-import static java.lang.System.Logger.Level.INFO
+import static java.util.logging.Level.INFO
+import static java.util.logging.Level.SEVERE
 
 class ServiceScript {
 
-    private static System.Logger syslog = System.getLogger ServiceScript.name
+    private static Logger syslog = Logger.getLogger ServiceScript.name
 
     static JsonSlurper JSON = new JsonSlurper()
     static HttpServer HTTP_SERVER
@@ -23,8 +24,8 @@ class ServiceScript {
 
     private ServiceScript() {}
 
-    static System.Logger logger(String name) {
-        System.getLogger name
+    static Logger logger(String name) {
+        Logger.getLogger name
     }
 
     static void expose(int port = new Random().nextInt(9000 - 5000 + 1) + 5000, Method... methods) {
@@ -84,7 +85,7 @@ class ServiceScript {
             try {
                 this.handler.call exchange
             } catch (e) {
-                syslog.log ERROR, "${e.message}"
+                syslog.log SEVERE, "${e.message}"
                 exchange.responseHeaders.add "Reason", e.message
                 exchange.out 500, "*/*", "".bytes
             }
