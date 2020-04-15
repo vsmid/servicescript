@@ -9,8 +9,8 @@ This is not designed with REST in mind.
 * Groovy
 
 ## Some details
-This script based around Java's HttpServer class.
-It adds some convenient methods to HttpExchange class for easier manipulation of incoming request and outgoing response.
+This script is basically a wrapper around Java's [HttpServer](https://docs.oracle.com/en/java/javase/11/docs/api/jdk.httpserver/com/sun/net/httpserver/HttpServer.html). There is no magic, it works just like described in the docs.
+It adds some convenient methods to `com.sun.net.httpserver.HttpExchange` class for easier manipulation of incoming request and outgoing response.
 
 ## How to use it?
 Just download [ServiceScript.groovy](./ServiceScript.groovy) file to you local machine.
