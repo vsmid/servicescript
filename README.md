@@ -22,7 +22,7 @@ You can now import that file to any other Groovy script you want using classic `
 Describe and implement operation per single request. Following properties can be set:
 * `name` - single word to name the operation, serves as URI. Do not put slashes or regex, just enter unique, simple name.       
 * `exchange` - implement operation. Closure taking `com.sun.net.httpserver.HttpExchange` as single parameter.       
-* `middleware` - a lit of middlewares(classes which are of type `ServiceScript.Middleware` or extends  `com.sun.net.httpserver.Filter`) executed in order.       
+* `middleware` - a lit of middlewares(classes which are of type `ServiceScript.Middleware` or extend  `com.sun.net.httpserver.Filter`) executed in order.       
 * `authenticator` - how is user authenticated. You can use any implementation of `com.sun.net.httpserver.Authenticator`. ServiceScript provides `BasicAuth` class which you can use instead `com.sun.net.httpserver.BasicAuthenticator` but either is fine. See `BasicAuth` usage in below given examples.
 
 **Middleware**
