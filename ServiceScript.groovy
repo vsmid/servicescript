@@ -17,11 +17,15 @@ class ServiceScript {
     static HttpServer HTTP_SERVER
 
     static {
-        System.setProperty "java.util.logging.SimpleFormatter.format", "[%1\$tY-%1\$tm-%1\$td %1\$tH:%1\$tM:%1\$tS.%1\$tL] %4\$-2s [%3\$s] (%2\$s) => %5\$s %6\$s%n"
+        System.setProperty "java.util.logging.SimpleFormatter.format", "[%1\$tF %1\$tT %1\$tL] [%4\$-1s] [%3\$s] %5\$s %n"
         extend()
     }
 
     private ServiceScript() {}
+
+    static System.Logger logger(String name) {
+        System.getLogger
+    }
 
     static void expose(int port = new Random().nextInt(9000 - 5000 + 1) + 5000, Method... methods) {
         if (!HTTP_SERVER) {
@@ -35,11 +39,11 @@ class ServiceScript {
             if (it?.middleware) context.filters.addAll it.middleware
         }
 
-        syslog.log INFO, "Available service methods:${System.lineSeparator()}${methods.collect { "/" + it.name }.join(System.lineSeparator())}"
+        methods.each { syslog.log INFO, "Registered method: /${it.name}" }
 
         HTTP_SERVER.start()
 
-        syslog.log INFO, "Service opened on port ${HTTP_SERVER.address.port}"
+        syslog.log INFO, "Service is listening on port ${HTTP_SERVER.address.port}"
     }
 
     static void extend() {
@@ -80,7 +84,7 @@ class ServiceScript {
             try {
                 this.handler.call exchange
             } catch (e) {
-                syslog ERROR, "${e.message}"
+                syslog.log ERROR, "${e.message}"
                 exchange.responseHeaders.add "Reason", e.message
                 exchange.out 500, "*/*", "".bytes
             }
