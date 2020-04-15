@@ -16,6 +16,23 @@ It adds some convenient methods to HttpExchange class for easier manipulation of
 Just download [ServiceScript.groovy](./ServiceScript.groovy) file to you local machine.
 You can now import that file to any other Groovy script you want using classic `import` statement.
 
+## Method, Middleware, Auth classes
+**Method**
+
+Describe and implement operation per single request. Following properties can be set:
+* `name` - single word to name the operation, serves as URI. Do not put slashes or regex, just enter unique, simple name.       
+* `exchange` - implement operation. Closure taking `com.sun.net.httpserver.HttpExchange` as single parameter.       
+* `middleware` - a lit of middlewares(classes which are of type `ServiceScript.Middleware` or extends  `com.sun.net.httpserver.Filter`) executed in order.       
+* `authenticator` - how is user authenticated. You can use any implementation of `com.sun.net.httpserver.Authenticator`. ServiceScript provides `BasicAuth` class which you can use instead `com.sun.net.httpserver.BasicAuthenticator` but either is fine. See `BasicAuth` usage in below given examples.
+
+**Middleware**
+
+Same as `com.sun.net.httpserver.Filter` but more convenient for Groovy instantiation..
+
+**Auth**
+
+Same as Java's `com.sun.net.httpserver.Authenticator` but more convenient for Groovy instantiation. This one you can put under Method's `authenticator` property.
+
 #### One-liner example
 ```groovy
 import com.sun.net.httpserver.Filter
