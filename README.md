@@ -132,6 +132,10 @@ Method someMethod = [
 ]
 ```
 
+## Open service for business
+ServiceScript provides method `ServiceScript#expose(int port, Method... methods)` which you must call in order to expose all implemented Methods. This should be done at the end of your script as a last step.
+If you omit `port` parameter ServiceScript will assign one automatically using random number generator. 
+
 ## Exception handling during exchange
 You can use classic try/catch to add customized exception handling.
 If you do not provide any ServiceScript will report all unhandled exceptions by responding with `http status 500` and by setting `Reason` http header with exception message. 
