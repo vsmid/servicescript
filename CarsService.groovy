@@ -2,6 +2,9 @@ import com.sun.net.httpserver.Filter
 import com.sun.net.httpserver.HttpExchange
 
 import static ServiceScript.*
+import static java.lang.System.Logger.Level.INFO
+
+def applog = logger "CarsService"
 
 int callCounter = 0
 
@@ -14,7 +17,7 @@ BasicAuth basicAuth = { String username, String password -> username == "lena" &
 
 Middleware requestCounter = [
         doFilter: { HttpExchange exchange, Filter.Chain chain ->
-            println "${exchange.requestURI} called ${++callCounter} time(s)"
+            applog.log INFO, "${exchange.requestURI} called ${++callCounter} time(s)"
             chain.doFilter exchange
         }
 ]
@@ -28,7 +31,7 @@ Method findAll = [
 Method findOne = [
         name         : "findOne",
         exchange     : { HttpExchange exchange ->
-            println "Authenticated user: ${exchange.principal}"
+            applog.log INFO, "Authenticated user: ${exchange.principal}"
             exchange.json 200, cars[exchange.jsondata()?.type] ?: []
         },
         middleware   : [requestCounter],
