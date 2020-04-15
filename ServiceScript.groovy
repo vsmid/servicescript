@@ -6,12 +6,18 @@ import groovy.transform.TupleConstructor
 import java.util.concurrent.Executors
 import java.util.function.Function
 
+import static java.lang.System.Logger.Level.ERROR
+import static java.lang.System.Logger.Level.INFO
+
 class ServiceScript {
+
+    private static System.Logger syslog = System.getLogger ServiceScript.name
 
     static JsonSlurper JSON = new JsonSlurper()
     static HttpServer HTTP_SERVER
 
     static {
+        System.setProperty "java.util.logging.SimpleFormatter.format", "[%1\$tY-%1\$tm-%1\$td %1\$tH:%1\$tM:%1\$tS.%1\$tL] %4\$-2s [%3\$s] (%2\$s) => %5\$s %6\$s%n"
         extend()
     }
 
@@ -29,12 +35,11 @@ class ServiceScript {
             if (it?.middleware) context.filters.addAll it.middleware
         }
 
-        println "[info] Available service methods:"
-        println methods.collect { "/" + it.name }.join(System.lineSeparator())
+        syslog.log INFO, "Available service methods:${System.lineSeparator()}${methods.collect { "/" + it.name }.join(System.lineSeparator())}"
 
         HTTP_SERVER.start()
 
-        println "[info] Service opened on port ${HTTP_SERVER.address.port}"
+        syslog.log INFO, "Service opened on port ${HTTP_SERVER.address.port}"
     }
 
     static void extend() {
@@ -75,7 +80,7 @@ class ServiceScript {
             try {
                 this.handler.call exchange
             } catch (e) {
-                println "[error] ${e.message}"
+                syslog ERROR, "${e.message}"
                 exchange.responseHeaders.add "Reason", e.message
                 exchange.out 500, "*/*", "".bytes
             }
