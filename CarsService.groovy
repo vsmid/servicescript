@@ -34,7 +34,7 @@ Method findOne = [
             applog.log INFO, "Authenticated user: ${exchange.principal}"
             exchange.json 200, cars[exchange.jsondata()?.type] ?: []
         },
-        middleware   : [requestCounter],
+        middleware   : [new CORSHandler(maxAge: 2000), requestCounter],
         authenticator: basicAuth
 ]
 

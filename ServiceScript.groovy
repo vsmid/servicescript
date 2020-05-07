@@ -120,4 +120,29 @@ class ServiceScript {
             super("basic")
         }
     }
+
+    static class CORSHandler extends Middleware {
+
+        String allowOrigin = "*"
+        String allowHeaders = "origin, accept, content-type"
+        String exposeHeaders = "location, info, reason"
+        String allowCredentials = "true"
+        String allowMethods = "GET, POST, PUT, DELETE, OPTIONS, HEAD, TRACE"
+        String maxAge = "3600"
+
+        @Override
+        void doFilter(HttpExchange exchange, Chain chain) throws IOException {
+            if(!exposeHeaders.contains("reason")) {
+                exposeHeaders += ", reason"
+            }
+
+            exchange.responseHeaders.add("Access-Control-Allow-Origin", allowOrigin)
+            exchange.responseHeaders.add("Access-Control-Allow-Headers", allowHeaders)
+            exchange.responseHeaders.add("Access-Control-Expose-Headers", exposeHeaders)
+            exchange.responseHeaders.add("Access-Control-Allow-Credentials", allowCredentials)
+            exchange.responseHeaders.add("Access-Control-Allow-Methods", allowMethods)
+            exchange.responseHeaders.add("Access-Control-Max-Age", maxAge)
+            chain.doFilter exchange
+        }
+    }
 }
