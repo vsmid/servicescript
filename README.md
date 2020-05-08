@@ -132,6 +132,37 @@ Method someMethod = [
 ]
 ```
 
+## CORS handler
+ServiceScript provides CORS handler which you can use easily. It comes in the form of middleware.
+```groovy
+Method findOne = [
+        name         : "findOne",
+        exchange     : { HttpExchange exchange ->
+            applog.log INFO, "Authenticated user: ${exchange.principal}"
+            exchange.json 200, cars[exchange.jsondata()?.type] ?: []
+        },
+        middleware   : [new CORSHandler(maxAge: 2000), requestCounter],
+        authenticator: basicAuth
+]
+```
+Constructor takes the following parameters with default values which you can override:
+```groovy
+ String allowOrigin = "*"
+ String allowHeaders = "origin, accept, content-type"
+ String exposeHeaders = "location, info, reason"
+ String allowCredentials = true
+ String allowMethods = "GET, POST, PUT, DELETE, OPTIONS, HEAD, TRACE"
+ String maxAge = 3600
+```
+
+```groovy
+// uses default values
+new CORSHandler()
+
+// overrides allowOrigin and allowCredentials
+new CORSHandler(allowOrigin: "localhost:3000", allowCredentials: false)
+```
+
 ## Open service for business
 ServiceScript provides method `ServiceScript#expose(int port, Method... methods)` which you must call in order to expose all implemented Methods. This should be done at the end of your script as a last step.
 If you omit `port` parameter ServiceScript will assign one automatically using random number generator. 
